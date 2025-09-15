@@ -95,7 +95,48 @@ class Auth extends BaseController
                     'id_role' => 2,
                 ]);
 
+                session()->setFlashdata('success', 'Berhasil Registrasi! Silahkan Login');
                 return $this->response->setJSON(['status' => 1, 'msg' => "Berhasil Registrasi"]);
+            }
+        }
+    }
+
+    public function proses_submit_login()
+    {
+        if ($this->request->isAJAX()) {
+            $rules = [
+                'username_email' => [
+                    'rules' => "required|trim",
+                    'errors' => [
+                        'required' => "Kolom Username/Email harus terisi!",
+                    ],
+                ],
+                'password' => [
+                    'rules' => "required|trim|min_length[3]",
+                    'errors' => [
+                        'required' => "Kolom Password harus terisi!",
+                        'min_length' => "Kolom Password Min Panjang karakter 3"
+                    ]
+                ]
+            ];
+
+            if (!$this->validate($rules)) {
+                return $this->response->setJSON(['status' => 0, 'token' => csrf_hash(), 'error' => $this->validation->getErrors()]);
+            } else {
+                $username_email = $this->request->getVar('username_email');
+                $password = $this->request->getVar('password');
+
+                $hasil = $this->users_model->where('username_email', $username_email)->first();
+                if ($hasil) {
+                    if (Hash::check_password($password, $hasil['password'])) {
+                        var_dump('berhasil masuk');
+                        die;
+                    } else {
+                        return $this->response->setJSON(['status' => 0, 'msg' => "Password yang anda masukan salah!"]);
+                    }
+                } else {
+                    return $this->response->setJSON(['status' => 0, 'msg' => "Username/Email tidak ditemukan!"]);
+                }
             }
         }
     }

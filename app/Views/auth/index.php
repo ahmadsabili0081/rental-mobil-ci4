@@ -24,6 +24,8 @@
   <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>deskapp-master/vendors/styles/core.css" />
   <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>deskapp-master/vendors/styles/icon-font.min.css" />
   <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>deskapp-master/vendors/styles/style.css" />
+  <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>deskapp-master/css/toastr.css" />
+  <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>deskapp-master/css/toastr.min.css" />
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-GBZ3SGGX85"></script>
@@ -75,18 +77,18 @@
             <div class="login-title">
               <h2 class="text-center text-primary">Login Rental Mobil</h2>
             </div>
-            <form>
-              <div class="input-group custom">
-                <input type="text" class="form-control form-control-lg" placeholder="Username" />
-                <div class="input-group-append custom">
-                  <span class="input-group-text"><i class="icon-copy dw dw-user1"></i></span>
-                </div>
+            <form id="loginSubmit">
+              <input type="hidden" class="ci_csrf_data" name="<?= csrf_token(); ?>" value="<?= csrf_hash(); ?>">
+              <div class="form-group">
+                <label for="">Username/Email</label>
+                <input type="text" class="form-control form-control-lg" name="username_email"
+                  placeholder="Username/Email" />
+                <small class="text-danger ml-2 text-error error_username_email"></small>
               </div>
-              <div class="input-group custom">
-                <input type="password" class="form-control form-control-lg" placeholder="**********" />
-                <div class="input-group-append custom">
-                  <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
-                </div>
+              <div class="form-group ">
+                <label for="">Password</label>
+                <input type="password" class="form-control form-control-lg" name="password" placeholder="**********" />
+                <small class="text-danger ml-2 text-error error_password"></small>
               </div>
               <div class="row pb-30">
                 <div class="col-6">
@@ -94,26 +96,21 @@
                 </div>
                 <div class="col-6">
                   <div class="forgot-password">
-                    <a href="forgot-password.html">Forgot Password</a>
+                    <a href="forgot-password.html">Lupa Password</a>
                   </div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-sm-12">
                   <div class="input-group mb-0">
-                    <!--
-                      use code for form submit
-                      <input class="btn btn-primary btn-lg btn-block" type="submit" value="Sign In">
-                    -->
-                    <a class="btn btn-primary btn-lg btn-block" href="index.html">Sign In</a>
+                    <button class="btn btn-primary btn-lg btn-block loginBtn" type="submit">Login</button>
                   </div>
                   <div class="font-16 weight-600 pt-10 pb-10 text-center" data-color="#707373">
                     OR
                   </div>
                   <div class="input-group mb-0">
                     <a class="btn btn-outline-primary btn-lg btn-block"
-                      href="<?= base_url('auth/register'); ?>">Register To Create
-                      Account</a>
+                      href="<?= base_url('auth/register'); ?>">Registrasi</a>
                   </div>
                 </div>
               </div>
@@ -129,6 +126,68 @@
   <script src="<?= base_url(); ?>deskapp-master/vendors/scripts/script.min.js"></script>
   <script src="<?= base_url(); ?>deskapp-master/vendors/scripts/process.js"></script>
   <script src="<?= base_url(); ?>deskapp-master/vendors/scripts/layout-settings.js"></script>
+  <script src="<?= base_url(); ?>deskapp-master/js/toastr.min.js"></script>
+
+  <?php if (session()->getFlashdata('success')): ?>
+    <script>
+      toastr.success('<?= session()->getFlashdata('success'); ?>', 'Berhasil')
+    </script>
+  <?php endif; ?>
+
+  <script>
+    $(document).ready(function (e) {
+      toastr.options = {
+        "progressBar": true,
+        "closeButton": true,
+      }
+      $('#loginSubmit').on('submit', function (e) {
+        e.preventDefault();
+
+        let form = this;
+        let csrfName = $('.ci_csrf_data').attr('name');
+        let csrfHash = $('.ci_csrf_data').val();
+        let formData = new FormData(form);
+        formData.append(csrfName, csrfHash);
+
+        $.ajax({
+          url: "<?= base_url('auth/proses_submit_login'); ?>",
+          method: "POST",
+          data: formData,
+          contentType: false,
+          processData: false,
+          dataType: 'json',
+          cache: false,
+          beforeSend: function (response) {
+            $(form).find('small.text-error').text('');
+            $(form).find('.loginBtn').text('Loading...');
+          },
+          success: function (response) {
+            if ($.isEmptyObject(response.error)) {
+              if (response.status == 1) {
+                $(form).find('.loginBtn').text('Login');
+              } else {
+                toastr.error(`${response.msg}`, 'Gagal');
+                $(form).find('.loginBtn').text('Login');
+              }
+
+            } else {
+              $(form).find('.loginBtn').text('Login');
+              $.each(response.error, function (prefix, val) {
+                $(form).find(`small.error_${prefix}`).text(val);
+              });
+            }
+          },
+          error: function (err) {
+            $(form).find('.loginBtn').text('Login');
+            console.error(err);
+          }
+        });
+
+      });
+
+    });
+  </script>
+
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NXZMQSS" height="0" width="0"
       style="display: none; visibility: hidden"></iframe></noscript>
