@@ -129,8 +129,27 @@ class Auth extends BaseController
                 $hasil = $this->users_model->where('username_email', $username_email)->first();
                 if ($hasil) {
                     if (Hash::check_password($password, $hasil['password'])) {
-                        var_dump('berhasil masuk');
-                        die;
+                        if ($hasil['id_role'] == 1) {
+                            $userdata = [
+                                'id_user' => $hasil['id_user'],
+                                'nama' => $hasil['nama'],
+                                'username_email' => $hasil['username_email'],
+                                'id_role' => $hasil['id_role']
+                            ];
+                            CIAuth::set_login_session($userdata);
+                            return $this->response->setJSON(['status' => 1, 'msg' => "Login Berhasil dilakukan!", 'url' => "admin"]);
+                        } else if ($hasil['id_role'] == 2) {
+                            $userdata = [
+                                'id_user' => $hasil['id_user'],
+                                'nama' => $hasil['nama'],
+                                'username_email' => $hasil['username_email'],
+                                'id_role' => $hasil['id_role']
+                            ];
+                            CIAuth::set_login_session($userdata);
+                            return $this->response->setJSON(['status' => 1, 'msg' => "Login Berhasil dilakukan!", 'url' => "user"]);
+                        } else {
+                            return $this->response->setJSON(['status' => 0, 'msg' => "Gagal Melakukan Login!"]);
+                        }
                     } else {
                         return $this->response->setJSON(['status' => 0, 'msg' => "Password yang anda masukan salah!"]);
                     }
