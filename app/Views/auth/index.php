@@ -127,19 +127,27 @@
   <script src="<?= base_url(); ?>deskapp-master/vendors/scripts/process.js"></script>
   <script src="<?= base_url(); ?>deskapp-master/vendors/scripts/layout-settings.js"></script>
   <script src="<?= base_url(); ?>deskapp-master/js/toastr.min.js"></script>
-
+  <script>
+    toastr.options = {
+      "progressBar": true,
+      "closeButton": true,
+    }
+  </script>
   <?php if (session()->getFlashdata('success')): ?>
     <script>
       toastr.success('<?= session()->getFlashdata('success'); ?>', 'Berhasil')
     </script>
   <?php endif; ?>
 
+  <?php if (session()->getFlashdata('fail')): ?>
+    <script>
+      toastr.error('<?= session()->getFlashdata('fail'); ?>', 'Gagal')
+    </script>
+  <?php endif; ?>
+
   <script>
     $(document).ready(function (e) {
-      toastr.options = {
-        "progressBar": true,
-        "closeButton": true,
-      }
+
       $('#loginSubmit').on('submit', function (e) {
         e.preventDefault();
 
@@ -165,6 +173,7 @@
             if ($.isEmptyObject(response.error)) {
               if (response.status == 1) {
                 $(form).find('.loginBtn').text('Login');
+                window.location.href = "<?= base_url(); ?>" + response.url;
               } else {
                 toastr.error(`${response.msg}`, 'Gagal');
                 $(form).find('.loginBtn').text('Login');

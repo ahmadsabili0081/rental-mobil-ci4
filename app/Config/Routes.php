@@ -5,10 +5,16 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
+// $routes->get('/', 'Home::index');
+$routes->get('/user', 'User::index');
 
+// $routes->get('/', 'Admin::index', ['as' => 'admin.index']);
 $routes->group('admin', ['filter' => 'cifilter:auth'], static function ($routes) {
-
+  $routes->get('/', 'Admin::index');
+  $routes->group('car', static function ($routes) {
+    $routes->get('', 'Admin::car', ['as' => 'admin.car.index']);
+    $routes->post('action_car/(:any)', 'Admin::action_car/$1', ['as' => 'admin.car.action_car']);
+  });
 });
 
 $routes->group('auth', ['filter' => 'cifilter:guest'], static function ($routes) {
@@ -17,3 +23,6 @@ $routes->group('auth', ['filter' => 'cifilter:guest'], static function ($routes)
   $routes->get('register', 'Auth::register', ['as' => 'auth.register']);
   $routes->post('proses_submit', 'Auth::proses_submit', ['as' => 'auth.proses_submit']);
 });
+$routes->get('logout', 'Auth::logout', ['as' => 'auth.logout']);
+
+

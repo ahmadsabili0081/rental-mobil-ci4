@@ -137,7 +137,7 @@ class Auth extends BaseController
                                 'id_role' => $hasil['id_role']
                             ];
                             CIAuth::set_login_session($userdata);
-                            return $this->response->setJSON(['status' => 1, 'msg' => "Login Berhasil dilakukan!", 'url' => "admin"]);
+                            return $this->response->setJSON(['status' => 1, 'msg' => "Login Berhasil dilakukan!", 'url' => "admin", 'role' => $hasil['id_role']]);
                         } else if ($hasil['id_role'] == 2) {
                             $userdata = [
                                 'id_user' => $hasil['id_user'],
@@ -146,7 +146,7 @@ class Auth extends BaseController
                                 'id_role' => $hasil['id_role']
                             ];
                             CIAuth::set_login_session($userdata);
-                            return $this->response->setJSON(['status' => 1, 'msg' => "Login Berhasil dilakukan!", 'url' => "user"]);
+                            return $this->response->setJSON(['status' => 1, 'msg' => "Login Berhasil dilakukan!", 'url' => "user", 'role' => $hasil['id_role']]);
                         } else {
                             return $this->response->setJSON(['status' => 0, 'msg' => "Gagal Melakukan Login!"]);
                         }
@@ -158,5 +158,19 @@ class Auth extends BaseController
                 }
             }
         }
+    }
+
+    public function logout()
+    {
+        $userdata = [
+            'id_user',
+            'nama',
+            'username_email',
+            'id_role',
+        ];
+        CIAuth::set_remove_session($userdata);
+
+        session()->setFlashdata('success', 'Berhasil Logout!');
+        return redirect()->to(base_url() . 'auth/login');
     }
 }

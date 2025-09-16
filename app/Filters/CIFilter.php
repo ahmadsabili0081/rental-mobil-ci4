@@ -33,7 +33,7 @@ class CIFilter implements FilterInterface
 
         if ($arguments[0] == 'auth') {
             if (!session()->get('id_role')) {
-                return redirect()->to(base_url('admin/login'))->with('fail', 'Anda harus Login terlebih dahulu!');
+                return redirect()->to(base_url('auth/login'))->with('fail', 'Anda harus Login terlebih dahulu!');
             }
         }
     }
