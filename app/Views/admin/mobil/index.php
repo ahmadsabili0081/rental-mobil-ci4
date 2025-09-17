@@ -110,12 +110,12 @@
             $('.ci_csrf_data').val(response.token);
             if ($.isEmptyObject(response.error)) {
               if (response.status == 1) {
-
+                $('#Container').DataTable().ajax.reload();
+                $(modal).modal('hide');
               }
             } else {
               $.each(response.error, function (prefix, val) {
-                console.log(val);
-                $(form).find(`small.error_${prefix}`).val(val);
+                $(form).find(`small.error_${prefix}`).text(val);
               });
             }
 

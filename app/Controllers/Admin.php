@@ -73,14 +73,14 @@ class Admin extends BaseController
                 if ($this->request->isAJAX()) {
                     $rules = [
                         'nama' => [
-                            'rules' => "required|is_unique[tb_mobil]",
+                            'rules' => "required|is_unique[tb_mobil.nama]",
                             'errors' => [
                                 'required' => "Kolom Nama Mobil harus terisi!",
                                 'is_unique' => "{field} Sudah terdaftar disistem!"
                             ],
                         ],
                         'no_plat' => [
-                            'rules' => "required|is_unique[tb_mobil]",
+                            'rules' => "required|is_unique[tb_mobil.nama]",
                             'errors' => [
                                 'required' => "Kolom No. Plat harus terisi!",
                                 'is_unique' => "{field} Sudah terdaftar disistem!"
@@ -97,7 +97,19 @@ class Admin extends BaseController
                     if (!$this->validate($rules)) {
                         return $this->response->setJSON(['status' => 0, 'token' => csrf_hash(), 'error' => $this->validator->getErrors()]);
                     } else {
-                        echo "masuk sini";
+                        $hasil = $this->mobil_model->save([
+                            'nama' => $this->request->getPost('nama'),
+                            'no_plat' => $this->request->getPost('no_plat'),
+                            'harga_sewa' => $this->request->getPost('harga_sewa'),
+                        ]);
+
+                        if ($hasil) {
+                            $result = ['status' => 1, 'msg' => "Berhasil menambahkan Data!", 'token' => csrf_hash()];
+                        } else {
+                            $result = ['status' => 0, 'msg' => "Gagal menambahkan Data!", 'token' => csrf_hash()];
+                        }
+
+                        return json_encode($result);
                     }
                 }
                 break;
