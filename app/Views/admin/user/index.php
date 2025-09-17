@@ -5,16 +5,19 @@
   <div class="col-md-12 col-lg-12 col-sm-12">
     <div class="card">
       <div class="card-body">
-        <button class="btn btn-primary btn-sm m-2 btnTambahModal">Tambah Data</button>
-        <table class="table" id="Container" style="width:100%;">
+        <table class="table" id="Container">
           <thead>
             <tr>
               <th scope="col">No</th>
-              <th scope="col">Nama Mobil</th>
-              <th scope="col">No Plat</th>
-              <th scope="col">Harga Sewa</th>
+              <th scope="col">Nama Lengkap</th>
+              <th scope="col">Username/Email</th>
+              <th scope="col">No.HP/Wa</th>
+              <th scope="col">Alamat</th>
+              <th scope="col">Role</th>
+              <th scope="col">Jenis Kelamin</th>
+              <th scope="col">KTP</th>
+              <th scope="col">SIM</th>
               <th scope="col">Gambar</th>
-              <th scope="col">Status</th>
               <th scope="col">Aksi</th>
             </tr>
           </thead>
@@ -27,7 +30,6 @@
   </div>
 </div>
 
-<?= $this->include('modals/modal_mobil'); ?>
 <?= $this->section('script'); ?>
 <script>
   $(document).ready(function () {
@@ -35,7 +37,6 @@
       $('#Container').DataTable({
         "processing": true,
         // "serverSide": true,
-        "responsive": true,
         "ajax": {
           "url": "<?= base_url('admin/car/action_car/ambil'); ?>",
           "method": "POST",
@@ -74,59 +75,6 @@
       });
     }
     getUser();
-
-    $('.btnTambahModal').on('click', function (e) {
-      e.preventDefault();
-
-      let modal = $('#modalMobil');
-
-      $(modal).modal('show');
-      $(modal).find('.modal-title').text('Tambah Data Mobil');
-      $(modal).find('.modal-footer > .btn-secondary').text('Tutup');
-      $(modal).find('.modal-footer > .btn-primary').text('Simpan');
-
-      $('#submitFormMobil').on('submit', function (e) {
-        e.preventDefault();
-
-        let form = this;
-        let csrfHash = $('.ci_csrf_data').attr('name');
-        let csrfToken = $('.ci_csrf_data').val();
-
-        let formData = new FormData(form);
-        formData.append(csrfHash, csrfToken);
-
-        $.ajax({
-          url: "<?= base_url('admin/car/action_car/tambah'); ?>",
-          method: "POST",
-          data: formData,
-          contentType: false,
-          processData: false,
-          dataType: 'json',
-          cache: false,
-          beforeSend: function (response) {
-            $(form).find('small.text-error').text('');
-          },
-          success: function (response) {
-            $('.ci_csrf_data').val(response.token);
-            if ($.isEmptyObject(response.error)) {
-              if (response.status == 1) {
-
-              }
-            } else {
-              $.each(response.error, function (prefix, val) {
-                console.log(val);
-                $(form).find(`small.error_${prefix}`).val(val);
-              });
-            }
-
-          },
-          error: function (response) {
-            console.error(response);
-          }
-        });
-      });
-
-    });
   });
 </script>
 <?= $this->endSection(); ?>
