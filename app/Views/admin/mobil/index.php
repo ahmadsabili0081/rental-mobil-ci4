@@ -5,7 +5,7 @@
   <div class="col-md-12 col-lg-12 col-sm-12">
     <div class="card">
       <div class="card-body">
-        <button class="btn btn-primary btn-sm m-2 btnTambahModal">Tambah Data</button>
+        <button class="btn btn-primary btn-sm my-4 btnTambahModal">Tambah Data</button>
         <table class="table" id="Container" style="width:100%;">
           <thead>
             <tr>
@@ -28,14 +28,23 @@
 </div>
 
 <?= $this->include('modals/modal_mobil'); ?>
+<?= $this->section('stylesheet'); ?>
+<link rel="stylesheet" href="<?= base_url(); ?>package/dist/sweetalert2.min.css">
+<?= $this->endSection(); ?>
+
 <?= $this->section('script'); ?>
+<script src="<?= base_url(); ?>package/dist/sweetalert2.all.min.js"></script>
+
 <script>
   $(document).ready(function () {
+    toastr.options = {
+      "progressBar": true,
+      "closeButton": true,
+    }
     function getUser() {
       $('#Container').DataTable({
         "processing": true,
         // "serverSide": true,
-        "responsive": true,
         "ajax": {
           "url": "<?= base_url('admin/car/action_car/ambil'); ?>",
           "method": "POST",
@@ -61,8 +70,8 @@
             "sortable": false,
             "render": function (data, row) {
               return `
-                <button class="btn btn-sm btn-warning btnEdit" data-iduser="${data.id_user}"><i class="fas fa-pencil"></i></button>
-                <button class="btn btn-sm btn-danger btnHapus" data-iduser="${data.id_user}"><i class="fas fa-trash"></i></button>
+                <button class="btn btn-sm btn-warning btnEdit" data-idMobil="${data.id_mobil}"><i class="fas fa-pencil"></i></button>
+                <button class="btn btn-sm btn-danger btnHapus" data-idMobil="${data.id_mobil}"><i class="fas fa-trash"></i></button>
               `
             }
           },
@@ -105,15 +114,19 @@
           cache: false,
           beforeSend: function (response) {
             $(form).find('small.text-error').text('');
+            $(form).find('.modal-footer > .btn-primary').text('Loading...');
           },
           success: function (response) {
             $('.ci_csrf_data').val(response.token);
             if ($.isEmptyObject(response.error)) {
               if (response.status == 1) {
+                toastr.success(`${response.msg}`, 'Berhasil');
                 $('#Container').DataTable().ajax.reload();
                 $(modal).modal('hide');
+                $(form).find('.modal-footer > .btn-primary').text('Simpan');
               }
             } else {
+              $(form).find('.modal-footer > .btn-primary').text('Simpan');
               $.each(response.error, function (prefix, val) {
                 $(form).find(`small.error_${prefix}`).text(val);
               });
@@ -121,12 +134,39 @@
 
           },
           error: function (response) {
+            $(form).find('.modal-footer > .btn-primary').text('Simpan');
             console.error(response);
           }
         });
       });
 
     });
+
+    $(document).on('click', '.btnHapus', function (e) {
+      e.preventDefault();
+      let idMobil = $(this).data('idmobil');
+
+      Swal.fire({
+        title: "Apakah Anda Yakin?",
+        text: "Ingin Menghapus Data ini!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Hapus!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.post('<?= base_url('admin/car/action_car/hapus') ?>', { idMobil }, function (response) {
+            if (response.status == 1) {
+              toastr.success(`${response.msg}`, 'Berhasil');
+              $('#Container').DataTable().ajax.reload();
+            } else {
+              toastr.error(`${response.msg}`, 'Gagal');
+            }
+          }, 'json');
+        }
+      });
+    })
   });
 </script>
 <?= $this->endSection(); ?>

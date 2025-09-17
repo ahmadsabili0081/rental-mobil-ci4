@@ -13,6 +13,9 @@
     href="<?= base_url(); ?>deskapp-master/vendors/images/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16"
     href="<?= base_url(); ?>deskapp-master/vendors/images/favicon-16x16.png" />
+  <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>deskapp-master/css/toastr.css" />
+  <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>deskapp-master/css/toastr.min.css" />
+  <?= $this->renderSection('stylesheet'); ?>
 
   <!-- Mobile Specific Metas -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
@@ -93,10 +96,12 @@
   <script src="<?= base_url(); ?>deskapp-master/src/plugins/apexcharts/apexcharts.min.js"></script>
   <script src="<?= base_url(); ?>deskapp-master/src/plugins/datatables/js/jquery.dataTables.min.js"></script>
   <script src="<?= base_url(); ?>deskapp-master/src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
-  <?= $this->renderSection('script'); ?>
+  <script src="<?= base_url(); ?>deskapp-master/js/toastr.min.js"></script>
+
   <script src="<?= base_url(); ?>deskapp-master/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
   <script src="<?= base_url(); ?>deskapp-master/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
   <script src="<?= base_url(); ?>deskapp-master/vendors/scripts/dashboard3.js"></script>
+  <?= $this->renderSection('script'); ?>
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NXZMQSS" height="0" width="0"
       style="display: none; visibility: hidden"></iframe></noscript>

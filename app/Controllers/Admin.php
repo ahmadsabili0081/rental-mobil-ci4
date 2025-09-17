@@ -113,6 +113,18 @@ class Admin extends BaseController
                     }
                 }
                 break;
+            case 'hapus':
+                $id_mobil = $this->request->getPost('idMobil');
+
+                $hasil = $this->mobil_model->delete(['id_mobil' => $id_mobil]);
+
+                if ($hasil) {
+                    $result = ['status' => 1, 'msg' => "Berhasil Menghapus Data!"];
+                } else {
+                    $result = ['status' => 0, 'msg' => "Gagal Menghapus Data!"];
+                }
+
+                break;
             case 'ambil':
                 $get_data = $this->mobil_model->findAll();
 
