@@ -22,7 +22,8 @@
           </div>
           <div class="form-group">
             <label for="">Harga Sewa</label>
-            <input type="text" class="form-control form-control-sm" name="harga_sewa" placeholder="1500000" />
+            <input type="text" class="form-control form-control-sm" id="hargaSewa" name="harga_sewa"
+              placeholder="1500000" />
             <small class="text-danger ml-2 text-error error_harga_sewa"></small>
           </div>
         </div>
@@ -34,3 +35,20 @@
     </div>
   </div>
 </div>
+
+
+<?= $this->section('script'); ?>
+<script>
+  $('#hargaSewa').on('input', function (e) {
+    e.preventDefault();
+
+    let val = $(this).val();
+
+    val = val.replace(/\D/g, '');
+
+    val = val.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+    $(this).val(val);
+  })
+</script>
+<?= $this->endSection(); ?>

@@ -31,6 +31,7 @@
   <link rel="stylesheet" type="text/css"
     href="<?= base_url(); ?>deskapp-master/src/plugins/datatables/css/responsive.bootstrap4.min.css" />
   <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>deskapp-master/vendors/styles/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-GBZ3SGGX85"></script>
@@ -97,6 +98,7 @@
   <script src="<?= base_url(); ?>deskapp-master/src/plugins/datatables/js/jquery.dataTables.min.js"></script>
   <script src="<?= base_url(); ?>deskapp-master/src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
   <script src="<?= base_url(); ?>deskapp-master/js/toastr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/js/all.min.js"></script>
 
   <script src="<?= base_url(); ?>deskapp-master/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
   <script src="<?= base_url(); ?>deskapp-master/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>

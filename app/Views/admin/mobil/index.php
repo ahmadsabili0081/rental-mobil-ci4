@@ -48,9 +48,9 @@
         "ajax": {
           "url": "<?= base_url('admin/car/action_car/ambil'); ?>",
           "method": "POST",
-          "succes": function (response) {
-            console.log(response);
-          }
+          // "success": function (response) {
+          //   return response.data;
+          // }
         },
         "columns": [
           {
@@ -62,9 +62,20 @@
           },
           { "data": "nama" },
           { "data": "no_plat" },
-          { "data": "harga_sewa" },
+          {
+            "data": null,
+            "render": function (data, row) {
+              return `Rp. ${data.harga_sewa.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+            }
+          },
           { "data": "gambar" },
-          { "data": "status" },
+          {
+            "data": null,
+            "render": function (data, row) {
+              let warna = data.status == "Tersedia" ? 'success' : 'danger';
+              return `<span class="badge badge-${warna}">${data.status}</span>`
+            }
+          },
           {
             "data": null,
             "sortable": false,
@@ -140,7 +151,9 @@
         });
       });
 
+
     });
+
 
     $(document).on('click', '.btnHapus', function (e) {
       e.preventDefault();

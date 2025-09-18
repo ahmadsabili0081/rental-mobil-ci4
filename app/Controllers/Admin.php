@@ -100,7 +100,7 @@ class Admin extends BaseController
                         $hasil = $this->mobil_model->save([
                             'nama' => $this->request->getPost('nama'),
                             'no_plat' => $this->request->getPost('no_plat'),
-                            'harga_sewa' => $this->request->getPost('harga_sewa'),
+                            'harga_sewa' => str_replace('.', '', $this->request->getPost('harga_sewa')),
                         ]);
 
                         if ($hasil) {
