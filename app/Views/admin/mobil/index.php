@@ -131,6 +131,7 @@
             $('.ci_csrf_data').val(response.token);
             if ($.isEmptyObject(response.error)) {
               if (response.status == 1) {
+                $(form)[0].reset();
                 toastr.success(`${response.msg}`, 'Berhasil');
                 $('#Container').DataTable().ajax.reload();
                 $(modal).modal('hide');
@@ -179,6 +180,27 @@
           }, 'json');
         }
       });
+    });
+
+    $(document).on('click', '.btnEdit', function (e) {
+      e.preventDefault();
+      let modal = $('#modalMobil');
+      $(modal).modal('show');
+      $(modal).find('.modal-title').text('Edit Data Mobil');
+      $(modal).find('.modal-footer > .btn-secondary').text('Tutup');
+      $(modal).find('.modal-footer > .btn-primary').text('Simpan');
+      let idMobil = $(this).data('idmobil');
+
+      $.post('<?= base_url('admin/car/action_car/ambil_data') ?>', { idMobil }, function (response) {
+        if (response.status == 1) {
+          $(modal).modal('show');
+          $(modal).find('#nama').val(response.data.nama);
+          $(modal).find('#noPlat').val(response.data.no_plat);
+          $(modal).find('#hargaSewa').val(response.data.harga_sewa);
+        } else {
+
+        }
+      }, 'json');
     })
   });
 </script>

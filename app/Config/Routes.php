@@ -17,11 +17,13 @@ $routes->group('admin', ['filter' => 'cifilter:auth'], static function ($routes)
     $routes->get('', 'Admin::user', ['as' => 'admin.user.index']);
     $routes->post('action_user/(:any)', 'Admin::action_user/$1', ['as' => 'admin.user.action_user']);
   });
+
   // car Listing
   $routes->group('car', static function ($routes) {
     $routes->get('', 'Admin::car', ['as' => 'admin.car.index']);
     $routes->post('action_car/(:any)', 'Admin::action_car/$1', ['as' => 'admin.car.action_car']);
   });
+
 });
 
 $routes->group('auth', ['filter' => 'cifilter:guest'], static function ($routes) {

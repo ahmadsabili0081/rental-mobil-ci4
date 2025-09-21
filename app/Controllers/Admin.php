@@ -113,6 +113,17 @@ class Admin extends BaseController
                     }
                 }
                 break;
+            case 'ambil_data':
+                $id_mobil = $this->request->getPost('idMobil');
+                $hasil = $this->mobil_model->where(['id_mobil' => $id_mobil])->find();
+
+                if ($hasil) {
+                    $result = ['status' => 1, 'msg' => "Berhasil Mendapatkan Data!", 'data' => $hasil];
+                } else {
+                    $result = ['status' => 0, 'msg' => "Gagal Mendapatkan Data!", 'data' => $hasil];
+                }
+
+                break;
             case 'hapus':
                 $id_mobil = $this->request->getPost('idMobil');
 
