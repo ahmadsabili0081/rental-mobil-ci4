@@ -28,6 +28,8 @@
 </div>
 
 <?= $this->include('modals/modal_mobil'); ?>
+<?= $this->include('modals/edit_modal_mobil'); ?>
+
 <?= $this->section('stylesheet'); ?>
 <link rel="stylesheet" href="<?= base_url(); ?>package/dist/sweetalert2.min.css">
 <?= $this->endSection(); ?>
@@ -184,8 +186,7 @@
 
     $(document).on('click', '.btnEdit', function (e) {
       e.preventDefault();
-      let modal = $('#modalMobil');
-      $(modal).modal('show');
+      let modal = $('#editModalMobil');
       $(modal).find('.modal-title').text('Edit Data Mobil');
       $(modal).find('.modal-footer > .btn-secondary').text('Tutup');
       $(modal).find('.modal-footer > .btn-primary').text('Simpan');
@@ -193,14 +194,59 @@
 
       $.post('<?= base_url('admin/car/action_car/ambil_data') ?>', { idMobil }, function (response) {
         if (response.status == 1) {
+          $(modal).find('.idMobil').val(response.data[0].id_mobil);
+          $(modal).find('#nama').val(response.data[0].nama);
+          $(modal).find('#noPlat').val(response.data[0].no_plat);
+          $(modal).find('#hargaSewa').val(response.data[0].harga_sewa);
           $(modal).modal('show');
-          $(modal).find('#nama').val(response.data.nama);
-          $(modal).find('#noPlat').val(response.data.no_plat);
-          $(modal).find('#hargaSewa').val(response.data.harga_sewa);
         } else {
 
         }
       }, 'json');
+    });
+
+    $('#submitEditFormMobil').on('submit', function (e) {
+      e.preventDefault();
+      let form = this;
+      let csrfHash = $('.ci_csrf_data').attr('name');
+      let csrfToken = $('.ci_csrf_data').val();
+      let formData = new FormData(form);
+      formData.append(csrfHash, csrfToken);
+
+      $.ajax({
+        url: "<?= base_url('admin/car/action_car/edit'); ?>",
+        method: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        cache: false,
+        dataType: 'json',
+        beforeSend: function (response) {
+          $(form).find('.modal-footer > .btn-primary').text('Loading...');
+          $(form).find('small.text-error').text('');
+        },
+        success: function (response) {
+          if ($.isEmptyObject(response.error)) {
+            if (response.status == 1) {
+              $(form).find('.modal-footer > .btn-primary').text('Simpan...');
+              $('#Container').DataTable().ajax.reload();
+              toastr.success(`${response.msg}`, 'Berhasil');
+            } else {
+              toastr.error(`${response.msg}`, 'Gagal');
+              $(form).find('.modal-footer > .btn-primary').text('Simpan...');
+            }
+          } else {
+            $(form).find('.modal-footer > .btn-primary').text('Simpan...');
+            $.each(response.error, function (prefix, val) {
+              $(form).find(`small.error_${prefix}`).text(val);
+            });
+          }
+        },
+        error: function (err) {
+          console.error(err);
+        }
+      });
+
     })
   });
 </script>
