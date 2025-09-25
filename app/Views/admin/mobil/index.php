@@ -46,6 +46,7 @@
     function getUser() {
       $('#Container').DataTable({
         "processing": true,
+        "responsive": true,
         // "serverSide": true,
         "ajax": {
           "url": "<?= base_url('admin/car/action_car/ambil'); ?>",
@@ -70,7 +71,12 @@
               return `Rp. ${data.harga_sewa.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
             }
           },
-          { "data": "gambar" },
+          {
+            data: null,
+            render: function (data, row) {
+              return `<img class="img-thumbnail" style="width:150px;" src="<?= base_url() . "gambar/admin/mobil/" ?>${data.gambar}" alt="" />`;
+            }
+          },
           {
             "data": null,
             "render": function (data, row) {
@@ -198,6 +204,7 @@
           $(modal).find('#nama').val(response.data[0].nama);
           $(modal).find('#noPlat').val(response.data[0].no_plat);
           $(modal).find('#hargaSewa').val(response.data[0].harga_sewa);
+          $(modal).find('.img-thumbnail').attr('src', `<?= base_url('gambar/admin/mobil/') ?>${response.data[0].gambar}`);
           $(modal).modal('show');
         } else {
 
@@ -228,15 +235,18 @@
         success: function (response) {
           if ($.isEmptyObject(response.error)) {
             if (response.status == 1) {
-              $(form).find('.modal-footer > .btn-primary').text('Simpan...');
+              $('#editModalMobil').modal('hide');
+              $(form).find('.modal-footer > .btn-primary').text('Simpan');
               $('#Container').DataTable().ajax.reload();
               toastr.success(`${response.msg}`, 'Berhasil');
             } else {
+              $('#editModalMobil').modal('hide');
               toastr.error(`${response.msg}`, 'Gagal');
-              $(form).find('.modal-footer > .btn-primary').text('Simpan...');
+              $(form).find('.modal-footer > .btn-primary').text('Simpan');
             }
           } else {
-            $(form).find('.modal-footer > .btn-primary').text('Simpan...');
+            $('#editModalMobil').modal('hide');
+            $(form).find('.modal-footer > .btn-primary').text('Simpan');
             $.each(response.error, function (prefix, val) {
               $(form).find(`small.error_${prefix}`).text(val);
             });
@@ -247,6 +257,18 @@
         }
       });
 
+    });
+
+    $('#hargaSewa').on('input', function (e) {
+      e.preventDefault();
+
+      let val = $(this).val();
+
+      val = val.replace(/\D/g, '');
+
+      val = val.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+      $(this).val(val);
     })
   });
 </script>

@@ -27,6 +27,19 @@
               placeholder="1500000" />
             <small class="text-danger ml-2 text-error error_harga_sewa"></small>
           </div>
+          <div class="form-group">
+            <label for="">Upload Gambar</label>
+            <div class="col-md-4 my-2 p-0">
+              <img id="output" class="img-thumbnail" src="" alt="">
+            </div>
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" name="gambar" id="inputGroupFile01"
+                aria-describedby="inputGroupFileAddon01">
+              <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+            </div>
+            <small class="text-danger ml-2 text-error error_gambar"></small>
+
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -37,18 +50,55 @@
   </div>
 </div>
 
+<?= $this->section('stylesheet'); ?>
+<link rel="stylesheet" href="<?= base_url(); ?>package/dist/sweetalert2.min.css">
+<?= $this->endSection(); ?>
+
 <?= $this->section('script'); ?>
+<script src="<?= base_url(); ?>package/dist/sweetalert2.all.min.js"></script>
+
 <script>
-  $('#hargaSewa').on('input', function (e) {
-    e.preventDefault();
 
-    let val = $(this).val();
+  $(document).ready(function (e) {
+    $('#hargaSewa').on('input', function (e) {
+      e.preventDefault();
 
-    val = val.replace(/\D/g, '');
+      let val = $(this).val();
 
-    val = val.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      val = val.replace(/\D/g, '');
 
-    $(this).val(val);
-  })
+      val = val.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+      $(this).val(val);
+    });
+
+    $('#inputGroupFile01').on('change', function (e) {
+      e.preventDefault();
+
+      let typeImage = e.target.files[0].type;
+      console.log(typeImage);
+      if ((typeImage == "image/png") || (typeImage == "image/jpg") || (typeImage == "image/jpeg")) {
+        let reader = new FileReader();
+        reader.onload = function () {
+          let image = $('#output');
+          image.attr('src', reader.result);
+        }
+        reader.readAsDataURL(e.target.files[0]);
+
+        let nama = e.target.files[0].name;
+        $('.custom-file-label').text(nama);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "File tidak dapat di Upload!",
+        });
+        $(this).val('');
+      }
+    });
+
+
+  });
+
 </script>
 <?= $this->endSection(); ?>
