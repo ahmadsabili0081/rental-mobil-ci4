@@ -205,9 +205,15 @@
           $(modal).find('#noPlat').val(response.data[0].no_plat);
           $(modal).find('#hargaSewa').val(response.data[0].harga_sewa);
           $(modal).find('.img-thumbnail').attr('src', `<?= base_url('gambar/admin/mobil/') ?>${response.data[0].gambar}`);
+          $(modal).find('.gambarLama').val(`<?= base_url('gambar/admin/mobil/') ?>${response.data[0].gambar}`);
+          $(modal).find('.custom-file-label').text(`${response.data[0].gambar}`);
           $(modal).modal('show');
         } else {
-
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "File tidak dapat di Upload!",
+          });
         }
       }, 'json');
     });
@@ -238,10 +244,18 @@
               $('#editModalMobil').modal('hide');
               $(form).find('.modal-footer > .btn-primary').text('Simpan');
               $('#Container').DataTable().ajax.reload();
-              toastr.success(`${response.msg}`, 'Berhasil');
+              Swal.fire({
+                icon: "success",
+                title: "Berhasil...",
+                text: `${response.msg}`,
+              });
             } else {
               $('#editModalMobil').modal('hide');
-              toastr.error(`${response.msg}`, 'Gagal');
+              Swal.fire({
+                icon: "error",
+                title: "Ops...",
+                text: `${response.msg}`,
+              });
               $(form).find('.modal-footer > .btn-primary').text('Simpan');
             }
           } else {

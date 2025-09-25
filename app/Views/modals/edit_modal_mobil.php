@@ -10,6 +10,7 @@
       <form action="" id="submitEditFormMobil">
         <input type="hidden" class="ci_csrf_data" name="<?= csrf_token(); ?>" value="<?= csrf_hash(); ?>">
         <input type="hidden" class="idMobil" name="id_mobil" value="">
+        <input type="hidden" class="gambarLama" name="gambar_lama" value="">
         <div class="modal-body">
           <div class="form-group">
             <label for="">Nama Mobil</label>

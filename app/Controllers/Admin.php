@@ -169,12 +169,37 @@ class Admin extends BaseController
                                 'required' => "Kolom Harga Sewa harus terisi!",
                             ],
                         ],
+                        'gambar' => [
+                            'rules' => 'max_size[gambar,1024]|is_image[gambar]',
+                            'errors' => [
+                                'max_size' => "Maksimal Upload Gambar 1Mb"
+                            ]
+                        ],
                     ];
 
                     if (!$this->validate($rules)) {
                         return $this->response->setJSON(['status' => 0, 'token' => csrf_hash(), 'error' => $this->validator->getErrors()]);
                     } else {
                         $id_mobil = $this->request->getPost('id_mobil');
+                        $info_car = $this->mobil_model->where('id_mobil', $id_mobil)->first();
+                        $old_file_picture = $info_car['gambar'];
+                        $file = $this->request->getFile('gambar');
+                        $path = 'gambar/admin/mobil/';
+                        $file_name = 'mobil' . "_" . $file->getRandomName();
+
+                        $upload_image = \Config\Services::image()
+                            ->withFile($file)
+                            ->resize(450, 450, true, 'height')
+                            ->save($path . $file_name);
+
+                        if ($upload_image) {
+                            if ($old_file_picture != null && file_exists($path . $old_file_picture) && $old_file_picture != 'default.jpg') {
+                                unlink($path . $old_file_picture);
+                            }
+                            $this->mobil_model->where('id_mobil', $id_mobil)
+                                ->set(['gambar' => $file_name])
+                                ->update();
+                        }
                         $update = $this->mobil_model->save([
                             'id_mobil' => $id_mobil,
                             'nama' => $this->request->getPost('nama'),
@@ -205,6 +230,15 @@ class Admin extends BaseController
                 break;
             case 'hapus':
                 $id_mobil = $this->request->getPost('idMobil');
+                $info_gambar = $this->mobil_model->where(['id_mobil' => $id_mobil])->first();
+                $file = $info_gambar['gambar'];
+                $path = "gambar/admin/mobil/";
+
+                if ($info_gambar) {
+                    if ($file != null && file_exists($path . $file) && $file != 'default.jpg') {
+                        unlink($path . $file);
+                    }
+                }
 
                 $hasil = $this->mobil_model->delete(['id_mobil' => $id_mobil]);
 
