@@ -44,7 +44,7 @@ class Admin extends BaseController
         switch ($action) {
 
             case 'ambil':
-                $get_data = $this->UserModel->findAll();
+                $get_data = $this->users_model->findAll();
 
                 if ($get_data) {
                     $result = ['status' => 1, 'msg' => "Berhasil Mendapatkan Data!", "data" => $get_data];

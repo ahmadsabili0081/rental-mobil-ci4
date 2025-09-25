@@ -140,7 +140,11 @@
             if ($.isEmptyObject(response.error)) {
               if (response.status == 1) {
                 $(form)[0].reset();
-                toastr.success(`${response.msg}`, 'Berhasil');
+                Swal.fire({
+                  icon: "success",
+                  title: "Berhasil...",
+                  text: `${response.msg}`,
+                });
                 $('#Container').DataTable().ajax.reload();
                 $(modal).modal('hide');
                 $(form).find('.modal-footer > .btn-primary').text('Simpan');
@@ -180,10 +184,18 @@
         if (result.isConfirmed) {
           $.post('<?= base_url('admin/car/action_car/hapus') ?>', { idMobil }, function (response) {
             if (response.status == 1) {
-              toastr.success(`${response.msg}`, 'Berhasil');
+              Swal.fire({
+                icon: "success",
+                title: "Berhasil...",
+                text: `${response.msg}`,
+              });
               $('#Container').DataTable().ajax.reload();
             } else {
-              toastr.error(`${response.msg}`, 'Gagal');
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: `${response.msg}`,
+              });
             }
           }, 'json');
         }

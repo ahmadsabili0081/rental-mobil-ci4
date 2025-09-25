@@ -5,6 +5,7 @@
   <div class="col-md-12 col-lg-12 col-sm-12">
     <div class="card">
       <div class="card-body">
+        <button class="btn btn-primary btn-sm my-4 btnTambahModal">Tambah Data</button>
         <table class="table" id="Container">
           <thead>
             <tr>
@@ -30,6 +31,8 @@
   </div>
 </div>
 
+<?= $this->include('modals/user_modal'); ?>
+
 <?= $this->section('script'); ?>
 <script>
   $(document).ready(function () {
@@ -37,12 +40,13 @@
       $('#Container').DataTable({
         "processing": true,
         // "serverSide": true,
+        "responsive": true,
         "ajax": {
-          "url": "<?= base_url('admin/car/action_car/ambil'); ?>",
+          "url": "<?= base_url('admin/user/action_user/ambil'); ?>",
           "method": "POST",
-          "succes": function (response) {
-            console.log(response);
-          }
+          // "success": function (response) {
+          //   return response.data;
+          // }
         },
         "columns": [
           {
@@ -53,10 +57,14 @@
             }
           },
           { "data": "nama" },
-          { "data": "no_plat" },
-          { "data": "harga_sewa" },
+          { "data": "username_email" },
+          { "data": "no_hp" },
+          { "data": "alamat" },
+          { "data": "id_role" },
+          { "data": "jenis_kel" },
+          { "data": "no_ktp" },
+          { "data": "no_sim" },
           { "data": "gambar" },
-          { "data": "status" },
           {
             "data": null,
             "sortable": false,
@@ -75,6 +83,17 @@
       });
     }
     getUser();
+
+    $('.btnTambahModal').on('click', function (e) {
+      e.preventDefault();
+      let modal = $('#userModal');
+      $(modal).find('.modal-title').text('Tambah Data User');
+      $(modal).find('.modal-footer > .btn-secondary').text('Tutup');
+      $(modal).find('.modal-footer > .btn-primary').text('Simpan');
+
+      $(modal).modal('show');
+    });
+
   });
 </script>
 <?= $this->endSection(); ?>

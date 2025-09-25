@@ -53,6 +53,11 @@ class TbUsers extends Migration
                 'constraint' => '16',
                 'null' => true
             ],
+            'gambar' => [
+                'type' => "VARCHAR",
+                'constraint' => '255',
+                'default' => 'default.jpg'
+            ],
             'created_at timestamp default current_timestamp',
             'updated_at timestamp default current_timestamp on update current_timestamp',
         ]);
