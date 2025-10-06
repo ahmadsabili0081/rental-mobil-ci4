@@ -110,18 +110,34 @@
           dataType: 'json',
           cache: false,
           beforeSend: function (response) {
+            $(form).find('.modal-footer > .btn-primary').text('Loading...');
             $(form).find('small.text-error').text('');
           },
           success: function (response) {
+            $('.ci_csrf_data').val(response.token);
             if ($.isEmptyObject(response.error)) {
-
+              if (response.status == 1) {
+                $(form)[0].reset();
+                Swal.fire({
+                  icon: "success",
+                  title: "Berhasil...",
+                  text: `${response.msg}`,
+                });
+                $('#Container').DataTable().ajax.reload();
+                $(modal).modal('hide');
+                $(form).find('.modal-footer > .btn-primary').text('Simpan');
+              } else {
+                $(form).find('.modal-footer > .btn-primary').text('Simpan');
+              }
             } else {
+              $(form).find('.modal-footer > .btn-primary').text('Simpan');
               $.each(response.error, function (prefix, val) {
                 $(form).find(`small.error_${prefix}`).text(val);
               });
             }
           },
           error: function (err) {
+            $(form).find('.modal-footer > .btn-primary').text('Simpan');
             console.error(err);
           }
         })

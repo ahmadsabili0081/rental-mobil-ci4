@@ -7,7 +7,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="" id="submitUser">
+      <form action="" id="submitUser" enctype="multipart/form-data">
         <input type="hidden" class="ci_csrf_data" name="<?= csrf_token(); ?>" value="<?= csrf_hash(); ?>">
         <div class="modal-body">
           <div class="form-group">
@@ -23,7 +23,8 @@
           </div>
           <div class="form-group">
             <label for="">No. HP</label>
-            <input type="text" class="form-control form-control-sm" id="noHp" name="no_hp" placeholder="088291417823" />
+            <input type="text" class="form-control form-control-sm" maxlength="12" id="noHp" name="no_hp"
+              placeholder="088291417823" />
             <small class="text-danger ml-2 text-error error_no_hp"></small>
           </div>
 
@@ -44,6 +45,20 @@
           </div>
 
           <div class="form-group">
+            <label for="">Password</label>
+            <input type="password" class="form-control form-control-sm" id="password" name="password"
+              placeholder="Password" />
+            <small class="text-danger ml-2 text-error error_password"></small>
+          </div>
+
+          <div class="form-group">
+            <label for="">Konfirmasi Password</label>
+            <input type="password" class="form-control form-control-sm" id="password2" name="password2"
+              placeholder="Konfirmasi Password" />
+            <small class="text-danger ml-2 text-error error_password2"></small>
+          </div>
+
+          <div class="form-group">
             <label for="">Upload KTP</label>
             <div class="col-md-4 my-2 p-0">
               <img id="previewKtp" class="img-thumbnail" src="" />
@@ -52,7 +67,7 @@
               <input type="text" class="form-control form-control-sm nik" name="no_ktp" disabled>
             </div>
             <div class="custom-file">
-              <input type="file" class="custom-file-input" name="no_ktp" id="inputGroupFile01"
+              <input type="file" class="custom-file-input" name="no_ktp_file" id="inputGroupFile01"
                 aria-describedby="inputGroupFileAddon01">
               <label class="custom-file-label label-ktp" for="inputGroupFile01">Choose file</label>
             </div>
@@ -70,7 +85,7 @@
               <input type="text" class="form-control form-control-sm sim" name="no_sim" disabled>
             </div>
             <div class="custom-file">
-              <input type="file" class="custom-file-input" name="no_sim" id="noSimUpload"
+              <input type="file" class="custom-file-input" name="no_sim_file" id="noSimUpload"
                 aria-describedby="inputGroupFileAddon01">
               <label class="custom-file-label label-sim" for="noSimUpload">Choose file</label>
             </div>

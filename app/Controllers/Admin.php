@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\MobilModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\Users;
+use App\Libraries\Hash;
 class Admin extends BaseController
 {
     protected $request;
@@ -77,18 +78,65 @@ class Admin extends BaseController
                                 'required' => "Kolom Jenis Kelamin harus terisi!"
                             ],
                         ],
+                        'password' => [
+                            'rules' => 'required|trim|min_length[3]|matches[password2]',
+                            'errors' => [
+                                'required' => "Kolom Password harus terisi!",
+                                'min_length' => "Kolom Password Min 3 Karakter",
+                                'matches' => "Kolom Password harus sama dengan Konfirmasi Password!"
+                            ],
+                        ],
+                        'password2' => [
+                            'rules' => 'required|trim|min_length[3]|matches[password]',
+                            'errors' => [
+                                'required' => "Kolom Konfirmasi Password harus terisi!",
+                                'min_length' => "Kolom Konfirmasi Password Min 3 Karakter",
+                                'matches' => "Kolom Konfirmasi Password harus sama dengan  Password!"
+                            ],
+                        ],
                     ];
 
                     if (!$this->validate($rules)) {
                         return $this->response->setJSON(['status' => 0, 'token' => csrf_hash(), 'error' => $this->validator->getErrors()]);
                     } else {
-                        $this->users_model->save([
+
+                        $file_ktp = $this->request->getFile('no_ktp_file');
+                        $file_sim = $this->request->getFile('no_sim_file');
+
+                        if ($file_ktp && $file_sim) {
+                            $path = 'admin/gambar/users/';
+
+                            $file_name_ktp = 'KTP' . "_" . $file_ktp->getRandomName();
+                            $file_name_sim = 'SIM' . "_" . $file_sim->getRandomName();
+
+                            $upload_image_ktp = \Config\Services::image()
+                                ->withFile($file_ktp)
+                                ->resize(450, 450, true, 'height')
+                                ->save($path . $file_name_ktp);
+
+                            $upload_image_sim = \Config\Services::image()
+                                ->withFile($file_sim)
+                                ->resize(450, 450, true, 'height')
+                                ->save($path . $file_name_sim);
+                        }
+
+                        $hasil = $this->users_model->save([
                             'nama' => $this->request->getVar('nama'),
                             'username_email' => $this->request->getVar('username_email'),
                             'alamat' => $this->request->getVar('alamat'),
                             'no_hp' => $this->request->getVar('no_hp'),
                             'jenis_kel' => $this->request->getVar('jenis_kel'),
+                            'no_ktp' => $upload_image_ktp ?? 'default_ktp.jpg',
+                            'no_sim' => $upload_image_sim ?? 'default_sim.jpg',
+                            'password' => Hash::set_hash($this->request->getVar('password')),
+                            'id_role' => 2
                         ]);
+
+                        if ($hasil) {
+                            $result = ['status' => 1, 'msg' => "Berhasil Menambahkan Data", 'token' => csrf_hash()];
+                        } else {
+                            $result = ['status' => 0, 'msg' => "Gagal Menambahkan Data", 'token' => csrf_hash()];
+                        }
                     }
                 }
                 break;
