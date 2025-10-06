@@ -6,7 +6,7 @@
     <div class="card">
       <div class="card-body">
         <button class="btn btn-primary btn-sm my-4 btnTambahModal">Tambah Data</button>
-        <table class="table" id="Container">
+        <table class="table" id="Container" style="width: 100%;">
           <thead>
             <tr>
               <th scope="col">No</th>
@@ -144,6 +144,40 @@
 
       });
 
+
+    });
+
+    $(document).on('click', '.btnHapus', function (e) {
+      e.preventDefault();
+      let idUser = $(this).data('iduser');
+      Swal.fire({
+        title: "Apakah Anda Yakin?",
+        text: "Ingin Menghapus Data ini!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Hapus!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.post('<?= base_url('admin/user/action_user/hapus') ?>', { idUser }, function (response) {
+            if (response.status == 1) {
+              Swal.fire({
+                icon: "success",
+                title: "Berhasil...",
+                text: `${response.msg}`,
+              });
+              $('#Container').DataTable().ajax.reload();
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: `${response.msg}`,
+              });
+            }
+          }, 'json');
+        }
+      });
     });
 
   });

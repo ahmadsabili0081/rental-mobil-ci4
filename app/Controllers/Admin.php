@@ -140,6 +140,17 @@ class Admin extends BaseController
                     }
                 }
                 break;
+            case 'hapus':
+                $id_user = $this->request->getPost('idUser');
+                $hasil = $this->users_model->delete(['id_user' => $id_user]);
+
+                if ($hasil) {
+                    $result = ['status' => 1, 'msg' => "Berhasil Menghapus Data!"];
+                } else {
+                    $result = ['status' => 0, 'msg' => "Gagal Menghapus Data!"];
+                }
+
+                break;
             case 'ambil':
                 $get_data = $this->users_model->findAll();
 
