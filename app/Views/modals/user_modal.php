@@ -7,7 +7,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="" id="submitFormMobil">
+      <form action="" id="submitUser">
         <input type="hidden" class="ci_csrf_data" name="<?= csrf_token(); ?>" value="<?= csrf_hash(); ?>">
         <div class="modal-body">
           <div class="form-group">

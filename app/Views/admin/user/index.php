@@ -92,6 +92,42 @@
       $(modal).find('.modal-footer > .btn-primary').text('Simpan');
 
       $(modal).modal('show');
+
+      $('#submitUser').on('submit', function (e) {
+        e.preventDefault();
+        let form = this;
+        let csrfHash = $('.ci_csrf_data').attr('name');
+        let csrfToken = $('.ci_csrf_data').val();
+        let formData = new FormData(form);
+        formData.append(csrfHash, csrfToken);
+
+        $.ajax({
+          url: "<?= base_url('admin/user/action_user/tambah'); ?>",
+          method: "POST",
+          data: formData,
+          processData: false,
+          contentType: false,
+          dataType: 'json',
+          cache: false,
+          beforeSend: function (response) {
+            $(form).find('small.text-error').text('');
+          },
+          success: function (response) {
+            if ($.isEmptyObject(response.error)) {
+
+            } else {
+              $.each(response.error, function (prefix, val) {
+                $(form).find(`small.error_${prefix}`).text(val);
+              });
+            }
+          },
+          error: function (err) {
+            console.error(err);
+          }
+        })
+
+      });
+
     });
 
   });

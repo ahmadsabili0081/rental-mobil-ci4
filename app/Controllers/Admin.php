@@ -42,7 +42,56 @@ class Admin extends BaseController
     public function action_user($action = '')
     {
         switch ($action) {
+            case 'tambah':
+                if ($this->request->isAJAX()) {
+                    $rules = [
+                        'nama' => [
+                            'rules' => "required",
+                            'errors' => [
+                                'required' => "Kolom Nama Lengkap Harus Terisi!"
+                            ],
+                        ],
+                        'username_email' => [
+                            'rules' => "required|trim|is_unique[tb_users.username_email]|min_length[5]",
+                            'errors' => [
+                                'required' => "Kolom Username/Email harus terisi!",
+                                'is_unique' => "Kolom Username/Email sudah terdaftar!",
+                                'min_length' => "Kolom Username Min 5 Karakter!"
+                            ],
+                        ],
+                        'no_hp' => [
+                            'rules' => "required|trim",
+                            'errors' => [
+                                'required' => "Kolom No.HP harus terisi!",
+                            ],
+                        ],
+                        'alamat' => [
+                            'rules' => "required",
+                            'errors' => [
+                                'required' => "Kolom Alamat harus terisi!"
+                            ],
+                        ],
+                        'jenis_kel' => [
+                            'rules' => "required",
+                            'errors' => [
+                                'required' => "Kolom Jenis Kelamin harus terisi!"
+                            ],
+                        ],
+                    ];
 
+                    if (!$this->validate($rules)) {
+                        return $this->response->setJSON(['status' => 0, 'token' => csrf_hash(), 'error' => $this->validator->getErrors()]);
+                    } else {
+                        $this->users_model->save([
+                            'nama' => $this->request->getVar('nama'),
+                            'username_email' => $this->request->getVar('username_email'),
+                            'alamat' => $this->request->getVar('alamat'),
+                            'no_hp' => $this->request->getVar('no_hp'),
+                            'jenis_kel' => $this->request->getVar('jenis_kel'),
+                        ]);
+                    }
+                }
+                break;
             case 'ambil':
                 $get_data = $this->users_model->findAll();
 
