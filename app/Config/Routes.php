@@ -24,6 +24,10 @@ $routes->group('admin', ['filter' => 'cifilter:auth'], static function ($routes)
     $routes->post('action_car/(:any)', 'Admin::action_car/$1', ['as' => 'admin.car.action_car']);
   });
 
+  $routes->group('role', static function ($routes) {
+    $routes->get('', 'Admin::role', ['as' => 'admin.role.index']);
+  });
+
 });
 
 $routes->group('auth', ['filter' => 'cifilter:guest'], static function ($routes) {

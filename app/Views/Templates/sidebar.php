@@ -29,6 +29,11 @@
           </a>
         </li>
         <li>
+          <a href="<?= base_url('admin/role') ?>" class="dropdown-toggle no-arrow">
+            <span class="micon bi bi-calendar4-week"></span><span class="mtext">Data Role</span>
+          </a>
+        </li>
+        <li>
           <a href="calendar.html" class="dropdown-toggle no-arrow">
             <span class="micon bi bi-calendar4-week"></span><span class="mtext">Boking & Transaksi</span>
           </a>

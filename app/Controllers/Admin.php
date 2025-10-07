@@ -370,4 +370,13 @@ class Admin extends BaseController
 
         return json_encode($result);
     }
+
+    public function role()
+    {
+        $data = [
+            'title' => "Role | Rental Mobil"
+        ];
+
+        return view('admin/role/index', $data);
+    }
 }
