@@ -24,8 +24,10 @@ $routes->group('admin', ['filter' => 'cifilter:auth'], static function ($routes)
     $routes->post('action_car/(:any)', 'Admin::action_car/$1', ['as' => 'admin.car.action_car']);
   });
 
+  // role Listing
   $routes->group('role', static function ($routes) {
     $routes->get('', 'Admin::role', ['as' => 'admin.role.index']);
+    $routes->post('action_role/(:any)', 'Admin::action_role/$1', ['as' => 'admin.role.action_role']);
   });
 
 });

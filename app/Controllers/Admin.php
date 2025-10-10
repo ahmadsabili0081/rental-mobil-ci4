@@ -7,6 +7,7 @@ use App\Models\MobilModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\Users;
 use App\Libraries\Hash;
+use App\Models\RoleModels;
 class Admin extends BaseController
 {
     protected $request;
@@ -14,6 +15,8 @@ class Admin extends BaseController
 
     protected $mobil_model;
     protected $users_model;
+
+    protected $role_model;
     public function __construct()
     {
         helper(['url', 'form']);
@@ -21,6 +24,7 @@ class Admin extends BaseController
         $this->validation = \Config\Services::validation();
         $this->mobil_model = new MobilModel();
         $this->users_model = new Users();
+        $this->role_model = new RoleModels();
     }
     public function index()
     {
@@ -104,7 +108,8 @@ class Admin extends BaseController
                         $file_sim = $this->request->getFile('no_sim_file');
 
                         if ($file_ktp && $file_sim) {
-                            $path = 'admin/gambar/users/';
+                            $path_ktp = 'admin/gambar/users/ktp/';
+                            $path_sim = 'admin/gambar/users/ktp/';
 
                             $file_name_ktp = 'KTP' . "_" . $file_ktp->getRandomName();
                             $file_name_sim = 'SIM' . "_" . $file_sim->getRandomName();
@@ -112,12 +117,12 @@ class Admin extends BaseController
                             $upload_image_ktp = \Config\Services::image()
                                 ->withFile($file_ktp)
                                 ->resize(450, 450, true, 'height')
-                                ->save($path . $file_name_ktp);
+                                ->save($path_ktp . $file_name_ktp);
 
                             $upload_image_sim = \Config\Services::image()
                                 ->withFile($file_sim)
                                 ->resize(450, 450, true, 'height')
-                                ->save($path . $file_name_sim);
+                                ->save($path_sim . $file_name_sim);
                         }
 
                         $hasil = $this->users_model->save([
@@ -378,5 +383,42 @@ class Admin extends BaseController
         ];
 
         return view('admin/role/index', $data);
+    }
+
+    public function action_role($action)
+    {
+
+        switch ($action) {
+            case 'tambah':
+                if ($this->request->isAJAX()) {
+                    $rules = [
+                        'nama' => [
+                            'rules' => "required|is_unique[tb_role.role]",
+                            'errors' => [
+                                'required' => "Kolom Role harus terisi!",
+                                'is_unique' => "{field} sudah terdaftar disistem!"
+                            ],
+                        ],
+                    ];
+
+                    if (!$this->validate($rules)) {
+                        return $this->response->setJSON(['status' => 0, 'token' => csrf_hash(), 'error' => $this->validator->getErrors()]);
+                    } else {
+
+                    }
+                }
+                break;
+            case 'ambil':
+                $hasil = $this->role_model->findAll();
+
+                if ($hasil) {
+                    $result = ['status' => 1, 'msg' => "Data Berhasil didapatkan!", 'data' => $hasil];
+                } else {
+                    $result = ['status' => 1, 'msg' => "Data Tidak ditemukan!", 'data' => $hasil];
+                }
+                break;
+        }
+
+        echo json_encode($result);
     }
 }

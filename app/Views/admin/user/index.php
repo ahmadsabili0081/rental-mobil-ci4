@@ -62,7 +62,13 @@
           { "data": "alamat" },
           { "data": "id_role" },
           { "data": "jenis_kel" },
-          { "data": "no_ktp" },
+          // { "data": "no_ktp" },
+          {
+            data: null,
+            render: function (data, row) {
+              return `<img src="<?= base_url('gambar/admin/users/ktp/') ?>${$.isEmptyObject(data.no_ktp) ? 'default_ktp.jpg' : data.no_ktp}" />`
+            }
+          },
           { "data": "no_sim" },
           { "data": "gambar" },
           {
